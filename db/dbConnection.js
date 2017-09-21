@@ -4,7 +4,7 @@ var config = {
   user: process.env.RDS_USERNAME || 'postgres',
   password: process.env.RDS_PASSWORD || '',
   database: process.env.RDS_DB_NAME || 'wasteline',
-  host: process.env.RDS_HOSTNAME || 'localhost',
+  host: process.env.RDS_HOSTNAME || process.env.DATABASE_URL || 'localhost',
   port: process.env.RDS_PORT || 5432,
   max: 10,
   idleTimeoutMillis: 30000
