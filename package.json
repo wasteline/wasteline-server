@@ -1,0 +1,17 @@
+{
+  "name": "wasteline-server",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Sebastian Boberg and Wasteline.io team",
+  "license": "",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "dependencies": {
+    "algoliasearch": "^3.24.3",
+    "body-parser": "^1.18.0",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.4",
+    "pg": "^7.3.0"
+  }
+}
