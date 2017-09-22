@@ -10,7 +10,7 @@ CREATE TABLE items (
   name VARCHAR(40),
   brand VARCHAR(20),
   material VARCHAR(15),
-  image TEXT,
+  cover_image_url TEXT,
   PRIMARY KEY (id)
 );
 
@@ -41,5 +41,19 @@ CREATE TABLE instructions (
   disposal VARCHAR(10),
   special VARCHAR(10),
   special_text TEXT,
+  PRIMARY KEY (id)
+);
+
+-- ---
+-- Table 'images'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS images CASCADE;
+
+CREATE TABLE images (
+  id SERIAL NOT NULL,
+  item_name VARCHAR(40) NOT NULL,
+  image_url TEXT,
   PRIMARY KEY (id)
 );
