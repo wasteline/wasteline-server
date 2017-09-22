@@ -1,10 +1,7 @@
 var dbHandlers = require('../db/dbHandlers.js');
 var index = require('../algolia/algoliaConnection.js');
 var multiparty = require('multiparty');
-var AWS = require('aws-sdk');
-var fs = require('fs');
-
-AWS.config.update({ accessKeyId: process.env.AWS_ID, secretAccessKey: process.env.AWS_KEY });
+var s3Handlers = require('../models/s3Handlers');
 
 exports.addItem = {
   post: (req, res) => {
@@ -39,29 +36,20 @@ exports.uploadImage = {
   post: (req, res) => {
     var form = new multiparty.Form();
     form.parse(req, (err, fields, files) => {
-
-      console.log(fields);
-      console.log(files);
-
-      const s3 = new AWS.S3({region: 'us-west-1'});
-      var base64data = new Buffer(files.photo, 'binary');
-
-      var params = {
-        Bucket: 'wasteline-images', 
-        Key: fields.product[0], 
-        ACL: 'public-read',
-        Body: fs.createReadStream(files.photo[0].path)
-      }
-
-      s3.putObject(params, function (err, data) {
-        if (err) {
-            console.log("Error uploading image: ", err);
-          } else {
-            console.log("Successfully uploaded image on S3", data);
-          }
-      });
-    
-      console.log('Upload completed!');
+      // TODO: Make s3 image names guaranteed unique
+      var imageName = files.photo[0].originalFilename.slice(0, -4);
+      s3Handlers.uploadImage(imageName, files.photo[0].path, (err, data) => {
+        if (!err) {
+          console.log(data.ETag);
+          var imageUrl = 'https://s3-us-west-1.amazonaws.com/wasteline-images/' + imageName;
+          // TODO: tie in item id
+          dbHandlers.addImage('1', imageUrl, (err, result) => {
+            if (err) {
+              console.log(err);
+            }
+          })
+        }
+      })
       res.sendStatus(200);
     });
   }
